@@ -1,5 +1,5 @@
 import { HStack, Progress, Table, Text } from "@chakra-ui/react";
-import PlayerLink from "./PlayerLink";
+import StampSheetLink from "./StampSheetLink";
 
 function StatTable({ stats }) {
   return stats && (
@@ -7,17 +7,19 @@ function StatTable({ stats }) {
       <Table.Caption />
       <Table.Header>
         <Table.Row>
+          <Table.ColumnHeader width="5%">#</Table.ColumnHeader>
           <Table.ColumnHeader width="20%">Player</Table.ColumnHeader>
-          <Table.ColumnHeader  width="60%">Stamp Count</Table.ColumnHeader>
-          <Table.ColumnHeader width="10%">Total Tier</Table.ColumnHeader>
-          <Table.ColumnHeader width="10%">Average Tier</Table.ColumnHeader>
+          <Table.ColumnHeader  width="45%">Stamp Count</Table.ColumnHeader>
+          <Table.ColumnHeader width="15%">Total Tier</Table.ColumnHeader>
+          <Table.ColumnHeader width="15%">Average Tier</Table.ColumnHeader>
         </Table.Row>
       </Table.Header>
       <Table.Body>
-        {stats.map(player => (
+        {stats.map((player, index) => (
           <Table.Row>
+            <Table.Cell>{index + 1}</Table.Cell>
             <Table.Cell>
-              <PlayerLink id={player.player_id} target="_blank">{player.player_name}</PlayerLink>
+              <StampSheetLink id={player.player_id}>{player.player_name}</StampSheetLink>
             </Table.Cell>
             <Table.Cell>
               <HStack>
@@ -30,7 +32,7 @@ function StatTable({ stats }) {
               </HStack>          
             </Table.Cell>
             <Table.Cell>{player.total_tier}</Table.Cell>
-            <Table.Cell>{player.avg_tier.toString().slice(0, 4)}</Table.Cell>
+            <Table.Cell>{player.avg_tier.toFixed(2)}</Table.Cell>
           </Table.Row>
         ))}
       </Table.Body>
