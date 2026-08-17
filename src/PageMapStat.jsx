@@ -1,4 +1,5 @@
 import {
+  Box,
   Card,
   Flex,
   Heading,
@@ -30,7 +31,6 @@ function PageMapStat() {
         setShowError(true);
         setIsLoading(false);
         setStats(null);
-        console.error(error);
       });
   }, []);
 
@@ -72,20 +72,11 @@ function PageDescription() {
 }
 
 function StampCard({ stamp, stats }) {
-  const [popularMaps, setPopularMaps] = useState(null);
-
-  useEffect(() => {
-    if (!stats) {
-      setPopularMaps(null);
-      return;
-    }
-
-    setPopularMaps(getPopularMaps(stamp, stats));
-  }, [stats]);
-
-  if (!popularMaps) {
+  if (!stats) {
     return null;
   }
+
+  const popularMaps = getPopularMaps(stamp, stats);
 
   return (
     <Card.Root borderRadius="15px" width="700px" minWidth="300px">
@@ -101,13 +92,14 @@ function StampCard({ stamp, stats }) {
 
 function MapTable({ maps }) {
   return (
-    <Table.Root width="80%">
+    <Table.Root width="90%">
       <Table.Caption />
       <Table.Header>
         <Table.Row>
           <Table.ColumnHeader width="10%">#</Table.ColumnHeader>
-          <Table.ColumnHeader width="70%">Map</Table.ColumnHeader>
-          <Table.ColumnHeader width="20%">Count</Table.ColumnHeader>
+          <Table.ColumnHeader width="65%">Map</Table.ColumnHeader>
+          <Table.ColumnHeader width="10%" textAlign="center">Count</Table.ColumnHeader>
+          <Table.ColumnHeader width="15%" textAlign="center">Difficulty</Table.ColumnHeader>
         </Table.Row>
       </Table.Header>
       <Table.Body>
@@ -119,13 +111,58 @@ function MapTable({ maps }) {
                 {entry.name}
               </ChallengeLink>
             </Table.Cell>
-            <Table.Cell>{entry.count}</Table.Cell>
+            <Table.Cell textAlign="center">{entry.count}</Table.Cell>
+            <Table.Cell textAlign="center">
+              <DifficultyBox difficulty={entry.difficulty} />
+            </Table.Cell>
           </Table.Row>
         ))}
       </Table.Body>
     </Table.Root>
   );
 }
+
+function DifficultyBox({ difficulty }) {
+  return (
+    <Box 
+      bgColor={difficultyColors[difficulty.sort + 1]} 
+      borderRadius="10px"
+      display="inline-block" 
+      paddingRight="10px" 
+      paddingLeft="10px" 
+      textAlign="center"
+    >
+      {difficulty.name}
+    </Box>
+  );
+}
+
+const difficultyColors = [
+  "#aaaaaa", // Undetermined
+  "#ffffff", // Untiered
+  "#9696ff", // Tier 1
+  "#93aeff", // Tier 2
+  "#91c8ff", // Tier 3
+  "#8eecff", // Tier 4
+  "#8cffe2", // Tier 5
+  "#89ffb0", // Tier 6
+  "#9bff87", // Tier 7
+  "#b7ff84", // Tier 8
+  "#d5ff82", // Tier 9
+  "#f4ff7f", // Tier 10
+  "#fff47c", // Tier 11
+  "#ffdd7a", // Tier 12
+  "#ffc677", // Tier 13
+  "#ffae75", // Tier 14
+  "#ff9572", // Tier 15
+  "#ff7c70", // Tier 16
+  "#ff6d79", // Tier 17
+  "#ff6daa", // Tier 18
+  "#ff68d9", // Tier 19
+  "#f266ff", // Tier 20
+  "#d863ff", // Tier 21
+  "#bd60ff"  // Tier 22
+];
 
 function getPopularMaps(stamp, stats) {
   return stats
@@ -134,6 +171,7 @@ function getPopularMaps(stamp, stats) {
     .map(entry => ({
       id: entry.challenge.id,
       name: getChallengeName(entry.challenge),
+      difficulty: entry.challenge.difficulty,
       count: getStampCount(stamp, entry)
     }));
 }
