@@ -197,6 +197,8 @@ function getChallengeName(challenge) {
 
   if (challenge.requires_fc) {
     name += " (FC)";
+  } else if (challenge.has_fc) {
+    name += " (C/FC)";
   }
 
   return name;
